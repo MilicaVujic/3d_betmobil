@@ -1,0 +1,26 @@
+#version 330 core
+
+layout(location = 0) in vec3 inPos;
+layout(location = 1) in vec3 inNor; //Normale
+
+out vec3 chFragPos; //Interpolirana pozicija fragmenta
+out vec3 chNor; //Interpolirane normale
+
+uniform mat4 uM;
+uniform mat4 uV;
+uniform mat4 uP;
+
+uniform float pomerajY;
+uniform float pomerajX;
+
+void main()
+{
+	vec3 newPosition=inPos;
+	newPosition.y+=pomerajY;
+	newPosition.x+=pomerajX;
+
+
+	chFragPos = vec3(uM * vec4(newPosition, 1.0));
+	gl_Position = uP * uV * vec4(chFragPos, 1.0);
+	chNor = mat3(transpose(inverse(uM))) * inNor; //Inverziju matrica bolje racunati na CPU
+}
